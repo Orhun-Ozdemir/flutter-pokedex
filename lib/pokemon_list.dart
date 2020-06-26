@@ -13,9 +13,20 @@ class PokemonList extends StatefulWidget {
   _PokemonListState createState() => _PokemonListState();
 }
 
+
+
 class _PokemonListState extends State<PokemonList> 
 {
+Future<Pokedex> poke;
 
+
+@override
+void initState() { 
+     
+  super.initState();
+  poke=pokedex();
+
+}
 
 Future<Pokedex> pokedex()async{
 
@@ -30,18 +41,46 @@ return pokedex;}
     return Scaffold(
 
 appBar: AppBar(),
-body:FutureBuilder( future:pokedex(),builder: (context,value){
+body:FutureBuilder( future:poke,builder: (context,value){
+  if(value.connectionState == ConnectionState.waiting){
 
-if(value.hasData){
+return Center(child:CircularProgressIndicator(),
+);
+  }
+
+if (value.connectionState == ConnectionState.done){
 
 
-  var pokedex=value.data;
-
-  return GridView.builder(itemCount:pokedex.pokemon.length,gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2), itemBuilder: (context,index){
 
 
+  return GridView.builder(itemCount:value.data.pokemon.length,gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2), itemBuilder: (context,index){
 
-return Text(pokedex.pokemon[index].name);
+               debugPrint(value.data.pokemon[index].img);
+return InkWell(
+  onTap:(){}
+  ,child:Hero(tag: value.data.pokemon[index].img,
+  child:
+Card(child:
+Container(
+  width:100,
+  height:150,
+  child:
+Column(
+children: <Widget>[
+//Image.network(pokedex.pokemon[index].img),
+FadeInImage.assetNetwork(placeholder: "assets/images/giphy.gif", image: "${value.data.pokemon[index].img}"),
+
+Text(value.data.pokemon[index].name),
+
+
+
+
+],
+
+
+
+
+),))));
 
 
 
